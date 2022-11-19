@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<style>
+canvas {
+    background: url(background.webp);
+    background-size: cover;
+    /* border: 10px solid red; */
+}
+#body {
+    position: absolute;
+    left: -4px;
+    top: 414px;
+    transform: scale(0.85);
+
+}
+body {margin:0}
+
+#head {
+    position: absolute;
+    transform-origin: center bottom;
+    transition: transform 1s;
+}
+
+
+</style>
+<body onload="onInit()" onkeypress="onKeyPress(event)">
+    <canvas width="640" height="448" id="canvas"></canvas>
+    <img src="body.png" id="body"/>
+    <img src="head.png" id="head"/>
+    <script src="main.js"></script>
+</body>
+</html>
