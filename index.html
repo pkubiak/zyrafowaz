@@ -1,32 +1,21 @@
 <!DOCTYPE html>
 <html>
-<style>
-canvas {
-    background: url(background.webp);
-    background-size: cover;
-    /* border: 10px solid red; */
-}
-#body {
-    position: absolute;
-    left: -4px;
-    top: 414px;
-    transform: scale(0.85);
-
-}
-body {margin:0}
-
-#head {
-    position: absolute;
-    transform-origin: center bottom;
-    transition: transform 1s;
-}
-
-
-</style>
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lemon&display=swap" rel="stylesheet">    
+    <link rel="stylesheet" href="style.css"/>
+</head>
 <body onload="onInit()" onkeypress="onKeyPress(event)">
-    <canvas width="640" height="448" id="canvas"></canvas>
-    <img src="body.png" id="body"/>
-    <img src="head.png" id="head"/>
+<main>
+    <div id="content">
+        <canvas width="600" height="800" id="canvas"></canvas>
+        <img src="body.png" id="body"/>
+        <img src="head.png" id="head"/>
+    </div>
+    <div id="border"></div>
+    <span id="length">0</span>
     <script src="main.js"></script>
+</main>
 </body>
 </html>
