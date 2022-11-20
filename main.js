@@ -1,7 +1,7 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-let head = document.getElementById('head');
+let HEAD = document.getElementById('head');
 let pattern = document.createElement('img');
 pattern.src = 'gfx/giraffes/00_pattern.png';
 
@@ -17,7 +17,7 @@ CANVAS.height = 800;
 
 
 const SCENARIOS = {};
-
+let GAME;
 
 function drawGrid(size) { 
     ctx.beginPath();
@@ -35,14 +35,8 @@ function drawGrid(size) {
     ctx.stroke();
 }
 
-function onKeyPress(event) {
-    let k = DIRS_KEYS.indexOf(event.key);
-    if(k != -1 && (k+2)%4 != lastDir && PLAYER){
-       PLAYER.dir = k;
-    }
-    console.log(event, k);
-}
-let lastDir, angle=0;
+// vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
 
 function drawGiraffe(ctx, player, perc, drawPattern) {
     ctx.save();
@@ -66,8 +60,8 @@ function drawGiraffe(ctx, player, perc, drawPattern) {
 
     let x = (1-perc)*x0 + perc*x1;
     let y = (1-perc)*y0 + perc*y1;
-    head.style.left = (SIZE*x+DX)+'px';
-    head.style.top = (SIZE*y)+'px';
+    HEAD.style.left = (SIZE*x+DX)+'px';
+    HEAD.style.top = (SIZE*y)+'px';
 
     ctx.lineTo(SIZE*x+DX, SIZE*y); 
     ctx.stroke();
@@ -94,95 +88,6 @@ function drawGiraffe(ctx, player, perc, drawPattern) {
     //ctx.restore();
 }
 
-let started = undefined, last = undefined;
-const min_iter = 0.5;
-
-function updateScores() {
-    document.getElementById('length').innerText = (PLAYER.segments.length) + " / " + (LEVEL.limit);
-}
-
-let STATE = "playing";
-let LEVEL, PLAYER;
-
-function gameover() {
-    // return initLevel("01_intro", 0);
-    STATE = "gameover";
-    head.src = "gfx/giraffes/00_head_xx.png";
-    head.style.zIndex = 107;
-    document.querySelector('#content').style.overflow = 'visible';
-}
-
-function success() {
-    console.log("Success ♥");
-    // initLevel("01_intro", 0);
-}
-
-function loop(timestamp) {
-    if(started === undefined)
-        started = last = timestamp;
-    let elapsed = (timestamp - last)/1000.0;
-
-    if(not_checked && elapsed > 0.25*min_iter) {
-        not_checked = false;
-
-        let [nx, ny] = PLAYER.nextSegment();
-
-        if(nx < 1 || nx > 9 || ny < 1 || ny > 12) {
-            return gameover();
-        }
-
-        if(LEVEL.visit(nx, ny, PLAYER.lastDir) === false) {
-            return gameover();
-        }
-
-        if(LEVEL.isCompleted()){
-            return success();
-        }
-    }
-
-    if(elapsed > min_iter) {
-        let [nx, ny] = PLAYER.nextSegment();
-
-        if(nx == 2 && ny == 9) {
-            document.querySelector("body").classList.add("tęcza");
-        }
-
-        LEVEL.mark(nx, ny, PLAYER.lastDir, PLAYER.dir);
-
-        PLAYER.move();
-        last = timestamp;
-        not_checked = true;
-
-        updateScores();
-        
-    }
-
-    if(PLAYER.lastDir == undefined || (elapsed > min_iter && PLAYER.lastDir !== PLAYER.dir)) {
-        // head.style.transition = 'transform 0.5s';
-        if((PLAYER.dir+1)%4 == PLAYER.lastDir)
-            angle -= 90;
-        else if((PLAYER.dir+3)%4 == PLAYER.lastDir)
-            angle += 90;
-        PLAYER.lastDir = PLAYER.dir;
-        head.style.transform = 'translate(-50%, -100%) rotate('+(angle)+'deg)';
-    }
-
-
-    
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawGiraffe(ctx, PLAYER, (elapsed/min_iter)%1, false);
-    drawGiraffe(ctx2, PLAYER, (elapsed/min_iter)%1, true);
-    ctx.drawImage(CANVAS, 0, 0);
-
-    if(STATE == "gameover")
-        return;
-    drawGrid(SIZE);
-
-    if(started === timestamp)
-        head.style.transition = 'transform 0.5s';
-
-    window.requestAnimationFrame(loop);
-}
 
 function loadScenario(name) {
     return fetch(`scenarios/${name}.json`)
@@ -192,21 +97,6 @@ function loadScenario(name) {
         });
 }
 
-function initLevel(scenario, id) {
-    if(LEVEL !== undefined)
-        LEVEL.destruct();
-    head.style.transition = '';
-    console.info("initLevel", scenario, id);
-    console.log(SCENARIOS);
-    const data = SCENARIOS[scenario].levels[id];
-    const level = new Level(data);
-    LEVEL = level;
-    not_checked = true;
-
-    document.querySelector("#level_name").innerText = level.name;
-
-    PLAYER = new Player(data.start.x, data.start.y, DIRS_KEYS.indexOf(data.start.dir));
-}
 
 class Player {
     constructor(x0, y0, dir) {
@@ -227,6 +117,170 @@ class Player {
         this.segments.push(this.nextSegment());
     }
 }
+
+class GamePlay {
+    updateScores() {
+        document.querySelector('#length').innerText = (this.player.segments.length) + " / " + (this.level.limit);
+    }
+
+    setLevelName(name) {
+        document.querySelector("#level_name").innerText = name;
+    }
+
+    constructor(data) {
+        // if(this.level !== undefined)
+        //     this.level.destruct();
+        HEAD.style.transition = '';
+        this.angle = 0;
+        console.log("--", data);
+        this.level = new Level(data);
+        this.not_checked = true;
+        this.setLevelName(this.level.name);
+        this.player = new Player(data.start.x, data.start.y, DIRS_KEYS.indexOf(data.start.dir));
+        this.min_iter = 0.5; // game speed 
+
+        this.onKeyPress_fn = this.onKeyPress.bind(this);
+        window.addEventListener("keypress", this.onKeyPress_fn)
+    }
+
+
+    loop(timestamp) {
+        if(this.started === undefined)
+            this.started = this.last = timestamp;
+
+        let elapsed = (timestamp - this.last)/1000.0;
+    
+        if(this.not_checked && elapsed > 0.25*this.min_iter) {
+            this.not_checked = false;
+    
+            let [nx, ny] = this.player.nextSegment();
+    
+            if(nx < 1 || nx > 9 || ny < 1 || ny > 12) {
+                return {transition_to: "gameover"};
+            }
+    
+            if(this.level.visit(nx, ny, this.player.lastDir) === false) {
+                return {transition_to: "gameover"};
+            }
+    
+            if(this.level.isCompleted()){
+                return {transition_to: "success"};
+            }
+        }
+    
+        if(elapsed > this.min_iter) {
+            let [nx, ny] = this.player.nextSegment();
+    
+            // if(nx == 2 && ny == 9) {
+            //     document.querySelector("body").classList.add("tęcza");
+            // }
+    
+            this.level.mark(nx, ny, this.player.lastDir, this.player.dir);
+    
+            this.player.move();
+            this.last = timestamp;
+            this.not_checked = true;
+    
+            this.updateScores();
+            
+        }
+    
+        if(this.player.lastDir == undefined || (elapsed > this.min_iter && this.player.lastDir !== this.player.dir)) {
+            if((this.player.dir+1)%4 == this.player.lastDir)
+                this.angle -= 90;
+            else if((this.player.dir+3)%4 == this.player.lastDir)
+                this.angle += 90;
+            this.player.lastDir = this.player.dir;
+            HEAD.style.transform = 'translate(-50%, -100%) rotate('+(this.angle)+'deg)';
+        }
+    
+    
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx2.clearRect(0, 0, CANVAS.width, CANVAS.height);
+        drawGiraffe(ctx, this.player, (elapsed/this.min_iter)%1, false);
+        drawGiraffe(ctx2, this.player, (elapsed/this.min_iter)%1, true);
+        ctx.drawImage(CANVAS, 0, 0);
+    
+        // drawGrid(SIZE);
+    
+        if(this.started === timestamp)
+            HEAD.style.transition = 'transform 0.5s';
+    
+        // window.requestAnimationFrame(loop);
+        return false;
+    }
+
+    destruct() {
+        console.log("Destruct");
+        window.removeEventListener("keypress", this.onKeyPress_fn);
+        this.level.destruct();
+    }
+
+    onKeyPress(event) {
+        console.log(">>", this.player);
+        let k = DIRS_KEYS.indexOf(event.key);
+        if(k != -1 && (k+2)%4 != this.player.lastDir ){
+           this.player.dir = k;
+        }
+        console.log(event, k);
+    }
+}
+class Game {
+    constructor() {
+        this.state = 'startPlaying';
+        this.loop_fn = this.loop.bind(this);
+    }
+
+    gameover(){
+        // return initLevel("01_intro", 0);
+        STATE = "gameover";
+        HEAD.src = "gfx/giraffes/00_head_xx.png";
+        HEAD.style.zIndex = 107;
+        document.querySelector('#content').style.overflow = 'visible';
+    }
+
+    succes(){
+        console.log("Success ♥");
+        // initLevel("01_intro", 0);
+    }
+
+    loop(timestamp) {
+        // console.log(">>", timestamp, this);
+        if(this.state == 'initialized') {
+            //
+        } else
+        if(this.state == 'startPlaying') {
+            //todo: show top-nav
+            // todo: show bottom-nav
+            // show game
+            let scenario = "01_intro", id = 0;
+            console.info("initLevel", scenario, id);
+            console.log(SCENARIOS);
+
+            const data = SCENARIOS[scenario].levels[id];
+
+            this.gameplay = new GamePlay(data);
+            this.state = 'playing';
+        } else 
+        if(this.state == 'playing') {
+            let res = this.gameplay.loop(timestamp);
+            if(res) {
+                this.state = res.transition_to;
+                this.gameplay.destruct();
+            }
+        } else 
+        if(this.state == 'gameover') {
+            console.log("STATE: gameover");
+            // this.state = 'startPlaying';
+        } else
+        if(this.state == 'success') {
+            console.log("STATE: success");
+        }
+        window.requestAnimationFrame(this.loop_fn);
+    }
+}
+
 
 class Level {
     constructor(data) {
@@ -289,16 +343,15 @@ class Level {
     }
 
     destruct() {
-        console.warn("Destruct!!! TODO")
-
+        for (const [key, value] of Object.entries(this.items)) {
+            value.el.remove();
+        }
     }
 }
 
 async function onInit() {
     await loadScenario("01_intro");
-    initLevel("01_intro", 0);
-    updateScores();
-
-    window.requestAnimationFrame(loop);
+    GAME = new Game();
+    window.requestAnimationFrame(GAME.loop_fn);
 }
 
