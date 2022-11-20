@@ -1,11 +1,11 @@
 {
     "name": "Hello World",
     "preview": null,
-    "background": "savanna.jpg",
+    "background": "savanna3.jpg",
     "levels": [
         {
             "name": "1.1 Początek",
-            "message": "x",
+            "message": "Zbierz Wszystkie Jabłka, aby zaliczyć poziom.",
             "difficulty": 1,
             "items": [
                 {"x":5,"y":3,"kind":"apple_0"},
@@ -23,7 +23,7 @@
         {
             "name": "1.2 Supełek",
             "difficulty": 1,
-            "message": "Zbieraj owoce od najwiekszego do najmniejszego",
+            "message": "Zbieraj owoce od najmniejszego do najwiekszego.",
             "items": [
                 {"x":5,"y":3,"kind":"apple_0"},
                 {"x":2,"y":5,"kind":"apple_1"},
@@ -42,7 +42,7 @@
         {
             "name": "1.3 Uczta",
             "difficulty": 2,
-            "message": "Uważaj, żeby się nie poplątać",
+            "message": "Uważaj, żeby się nie poplątać ;)",
             "items": [
                 {"x":2,"y":3,"kind":"apple_1"},
                 {"x":3,"y":2,"kind":"apple_0"},
@@ -59,7 +59,7 @@
                 "2_8": "+", "3_8": "+", "4_8": "+", "5_8": "+",
                 "2_10": "+", "3_10": "+", "4_10": "+", "5_10": "+"
             },
-            "limit": 19
+            "limit": 33
         }
     ]
 }

@@ -18,6 +18,11 @@ CANVAS.height = 800;
 
 const SCENARIOS = {};
 let GAME;
+const WRONG_ORDERS = [
+    ["apple_0", "apple_1"], ["apple_0", "apple_2"], ["apple_0", "apple_3"], ["apple_0", "apple_4"], ["apple_0", "apple_5"],
+    ["apple_1", "apple_2"], ["apple_1", "apple_3"], ["apple_1", "apple_4"], ["apple_1", "apple_5"], ["apple_2", "apple_3"],
+    ["apple_2", "apple_4"], ["apple_2", "apple_5"], ["apple_3", "apple_4"], ["apple_3", "apple_5"], ["apple_4", "apple_5"]
+];
 
 function drawGrid(size) { 
     ctx.beginPath();
@@ -134,15 +139,14 @@ class GamePlay {
         document.querySelector("#level_name").innerText = name;
     }
 
-    constructor(data, progress) {
+    constructor(data) {
         HEAD.style.transition = '';
         HEAD.src = "gfx/giraffes/00_head.png";
         HEAD.style.left = (SIZE*data.start.x+DX)+'px';
         HEAD.style.top = (SIZE*data.start.y)+'px';
         HEAD.style.transform = 'translate(-50%, -100%)';
 
-        document.querySelector("main").style.backgroundPosition = (100*progress) + "%";
-
+        
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx2.clearRect(0, 0, CANVAS.width, CANVAS.height);
         this.angle = 0;
@@ -154,6 +158,7 @@ class GamePlay {
         this.min_iter = 0.3; // game speed 
         this.updateScores();
         this.onKeyPress_fn = this.onKeyPress.bind(this);
+        this.collectedItems = {};
         window.addEventListener("keypress", this.onKeyPress_fn);
         
     }
@@ -174,8 +179,20 @@ class GamePlay {
                 return {transition_to: "gameover", message: "Wypadłeś poza planszę"};
             }
     
-            if(this.level.visit(nx, ny, this.player.lastDir) === false) {
+            let item = this.level.visit(nx, ny, this.player.lastDir);
+            if(item === false) {
                 return {transition_to: "gameover", message: "Zaplątała ci się szyja 😂"};
+            }
+
+            if(item && item.kind !== undefined) {
+                for(let [a,b] of WRONG_ORDERS) {
+                    if(item.kind == b && a in this.collectedItems)
+                        return {
+                            transition_to: "gameover",
+                            message: "Zła kolejność",
+                        }
+                }
+                this.collectedItems[item.kind] = true;
             }
     
             if(this.level.isCompleted()){
@@ -257,18 +274,20 @@ class Game {
             //
         } else
         if(this.state == 'startPlaying') {
-            //todo: show top-nav
-            // todo: show bottom-nav
-            // show game
             this.state = 'waiting';
-            // let id = Math.floor(SCENARIOS[this.scenario].levels.length * Math.random());
+
             console.info("initLevel", this.scenario, this.level_id);
             console.log(SCENARIOS);
             document.querySelector("body").classList.remove("tęcza");
 
             const data = SCENARIOS[this.scenario].levels[this.level_id];
 
-            this.gameplay = new GamePlay(data, this.level_id / (SCENARIOS[this.scenario].levels.length - 1));
+            let progress = this.level_id / (SCENARIOS[this.scenario].levels.length - 1);
+
+            document.querySelector("main").style.background = "url(gfx/backgrounds/" + SCENARIOS[this.scenario].background + ")";
+            document.querySelector("main").style.backgroundPosition = (100*progress) + "%";
+
+            this.gameplay = new GamePlay(data);
 
             if(data.message) {
                 showModal(
@@ -373,6 +392,7 @@ class Level {
             let item = this.items[key];
             item.el.classList.add('collected');
             delete this.items[key];
+            return item;
         }
 
         let dir_c = (dir == 0 || dir == 2) ? "|" : "-";
