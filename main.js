@@ -189,14 +189,14 @@ class GamePlay {
                     if(item.kind == b && a in this.collectedItems)
                         return {
                             transition_to: "gameover",
-                            message: "Zła kolejność",
+                            message: "Pamiętaj, aby zjadać jabłuszka od najmniejszych",
                         }
                 }
                 this.collectedItems[item.kind] = true;
             }
     
             if(this.level.isCompleted()){
-                return {transition_to: "success", message: "Twój wynik to: 17"};
+                return {transition_to: "success", message: "Twój wynik to: " + this.player.length()};
             }
         }
     
@@ -263,7 +263,7 @@ class Game {
         this.state = 'startPlaying';
         this.loop_fn = this.loop.bind(this);
         this.scenario = '01_intro';
-        this.level_id = 0;
+        this.level_id = 3;
     }
 
     loop(timestamp) {

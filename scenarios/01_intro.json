@@ -60,6 +60,36 @@
                 "2_10": "+", "3_10": "+", "4_10": "+", "5_10": "+"
             },
             "limit": 33
+        },
+        {
+            "name": "1.4 Pyszne Listki",
+            "difficulty": 1,
+            "message": "Liście są zawsze pyszne, możesz je jeść kiedy chcesz.",
+            "items": [
+                {"x": 2, "y": 2, "kind": "leaf"},
+                {"x": 4, "y": 2, "kind": "leaf"},
+                {"x": 6, "y": 2, "kind": "leaf"},
+                {"x": 8, "y": 2, "kind": "leaf"},
+
+                {"x": 4, "y": 4, "kind": "leaf"},
+                {"x": 5, "y": 4, "kind": "leaf"},
+                {"x": 6, "y": 4, "kind": "leaf"},
+
+                {"x": 5, "y": 1, "kind": "leaf"},
+
+                {"x": 2, "y": 3, "kind": "apple_2"},
+                {"x": 4, "y": 3, "kind": "apple_0"},
+                {"x": 6, "y": 3, "kind": "apple_1"},
+                {"x": 8, "y": 3, "kind": "apple_3"}
+            ],
+            "start": {
+                "x": 5, "y": 7, "dir": "w"
+            },
+            "hitbox": {
+                "2_8": "+", "3_8": "+", "4_8": "+", "5_8": "+",
+                "2_10": "+", "3_10": "+", "4_10": "+", "5_10": "+"
+            },
+            "limit": 23
         }
     ]
 }
