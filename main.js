@@ -113,14 +113,19 @@ class Player {
     lastSegment() {
         return this.segments[this.segments.length-1]
     }
+    
     move() {
         this.segments.push(this.nextSegment());
+    }
+
+    length() {
+        return this.segments.length;
     }
 }
 
 class GamePlay {
     updateScores() {
-        document.querySelector('#length').innerText = (this.player.segments.length) + " / " + (this.level.limit);
+        document.querySelector('#length').innerText = (this.player.length()) + " / " + (this.level.limit);
     }
 
     setLevelName(name) {
@@ -131,13 +136,14 @@ class GamePlay {
         // if(this.level !== undefined)
         //     this.level.destruct();
         HEAD.style.transition = '';
+        HEAD.src = "gfx/giraffes/00_head.png";
         this.angle = 0;
         console.log("--", data);
         this.level = new Level(data);
         this.not_checked = true;
         this.setLevelName(this.level.name);
         this.player = new Player(data.start.x, data.start.y, DIRS_KEYS.indexOf(data.start.dir));
-        this.min_iter = 0.5; // game speed 
+        this.min_iter = 1; // game speed 
 
         this.onKeyPress_fn = this.onKeyPress.bind(this);
         window.addEventListener("keypress", this.onKeyPress_fn)
@@ -171,13 +177,15 @@ class GamePlay {
         if(elapsed > this.min_iter) {
             let [nx, ny] = this.player.nextSegment();
     
-            // if(nx == 2 && ny == 9) {
-            //     document.querySelector("body").classList.add("tęcza");
-            // }
+            if(nx == 2 && ny == 9) {
+                document.querySelector("body").classList.add("tęcza");
+            }
     
             this.level.mark(nx, ny, this.player.lastDir, this.player.dir);
     
             this.player.move();
+            if(this.player.length() > this.level.limit)
+                return {transition_to: "gameover"};
             this.last = timestamp;
             this.not_checked = true;
     
@@ -207,7 +215,6 @@ class GamePlay {
         if(this.started === timestamp)
             HEAD.style.transition = 'transform 0.5s';
     
-        // window.requestAnimationFrame(loop);
         return false;
     }
 
@@ -232,19 +239,6 @@ class Game {
         this.loop_fn = this.loop.bind(this);
     }
 
-    gameover(){
-        // return initLevel("01_intro", 0);
-        STATE = "gameover";
-        HEAD.src = "gfx/giraffes/00_head_xx.png";
-        HEAD.style.zIndex = 107;
-        document.querySelector('#content').style.overflow = 'visible';
-    }
-
-    succes(){
-        console.log("Success ♥");
-        // initLevel("01_intro", 0);
-    }
-
     loop(timestamp) {
         // console.log(">>", timestamp, this);
         if(this.state == 'initialized') {
@@ -254,14 +248,16 @@ class Game {
             //todo: show top-nav
             // todo: show bottom-nav
             // show game
-            let scenario = "01_intro", id = 0;
+            this.state = 'playing';
+
+            let scenario = "01_intro", id = 2;
             console.info("initLevel", scenario, id);
             console.log(SCENARIOS);
+            document.querySelector("body").classList.remove("tęcza");
 
             const data = SCENARIOS[scenario].levels[id];
 
             this.gameplay = new GamePlay(data);
-            this.state = 'playing';
         } else 
         if(this.state == 'playing') {
             let res = this.gameplay.loop(timestamp);
@@ -272,10 +268,18 @@ class Game {
         } else 
         if(this.state == 'gameover') {
             console.log("STATE: gameover");
+            HEAD.src = "gfx/giraffes/00_head_xx.png";
+            // HEAD.style.zIndex = 107;
+            // document.querySelector('#content').style.overflow = 'visible';
             // this.state = 'startPlaying';
+            window.setTimeout(() => {this.state = "startPlaying"}, 5000);
+            this.state = 'initialized';
+            window.setTimeout(() => {alert("Uszkodziłeś żyrafę! Spróbuj ponownie")}, 2000);
         } else
         if(this.state == 'success') {
             console.log("STATE: success");
+            alert("Grtulacje");
+            this.state = 'initialized';
         }
         window.requestAnimationFrame(this.loop_fn);
     }
