@@ -1,6 +1,6 @@
 html{width: 100%; height: 100%}
 body {
-    background: url(backdrop.jpg);
+    background: url(gfx/background.jpg);
     background-size: cover;
     font-family: 'Lemon', cursive;
     margin:0;
@@ -8,6 +8,7 @@ body {
 }
 canvas {
     z-index: 2;
+    backdrop-filter: sepia(50%);
 }
 
 body.tęcza canvas {
@@ -24,34 +25,30 @@ body.tęcza canvas {
 }
 
 #body {
-position: absolute;
-left: -4px;
-top: 414px;
-transform: scale(0.85);
-z-index: 101;
+    position: absolute;
+    left: -24px;
+    top: 414px;
+    transform: scale(0.85);
+    z-index: 108;
 }
 
 #head {
-position: absolute;
-transform-origin: center bottom;
-z-index: 3;
+    position: absolute;
+    transform: translate(-50%, -100%);
+    transform-origin: center bottom;
+    z-index: 107;
 }
 
 #content {
+    /* overflow: hidden; */
     /* overflow-y: hidden; */
+    /* overflow-x: visible; */
     position: relative;
     width: 600px;
     height: 800px;
-    /* outline: 10px solid #ccc; */
-    /* transition:  */
-    /* sepia(60%); */
     background-size: cover;
-    /* z-index: 0; */
 }
 
-#content:hover {
-    /* backdrop-filter: hue-rotate(360deg); */
-}
 
 .item {
     width: 64px;
@@ -69,7 +66,7 @@ z-index: 3;
     transform-origin: center;
 }
 
-#length {
+#nav_top, #nav_bottom {
     color: white;
     font-weight: bold;
     font-size: 60px;
@@ -77,10 +74,20 @@ z-index: 3;
     top: -90px;
     text-shadow: 0 0 6px black;
     right: 0;
+    width: 100%;
     padding: 20px;
-    z-index: 105    ;
+    box-sizing: border-box;;
+    z-index: 105;
+    display: flex;
+    justify-content: space-between;
 }
 
+#nav_bottom {
+    font-size: 30px;
+    bottom: -80px; top: auto;
+    text-align: center; 
+    display:block;;
+}
 
 main {
     /* background-clip: content-box; */
@@ -90,15 +97,22 @@ main {
     position: absolute ;
     left: 50%; top: 50%;
     transform: translate(-50%, -50%);
-    background: url(background.webp);
+    background: url(gfx/backgrounds/savanna.jpg);
+    background-size: cover;
+    background-repeat: repeat-x;
+    /* animation: tlo 10s infinite; */
+}
 
+@keyframes tlo {
+    from{background-position: 0%;}
+    to{background-position: 100%;}
 }
 
 #border {
     width: 710px;
     height: 930px;
     border: 100px solid blue;
-    border-image: url(borders3.png)  240 / 100px round;
+    border-image: url(gfx/borders.png)  240 / 100px round;
     position: absolute;
     left: -50px;
     top: -65px;
@@ -107,3 +121,6 @@ main {
     z-index:100;
 }
 
+#back_btn {
+    cursor: pointer;
+}

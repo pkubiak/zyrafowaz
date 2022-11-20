@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lemon&display=swap" rel="stylesheet">    
+    <link href="https://fonts.googleapis.com/css2?family=Lemon&display=swap" rel="stylesheet">     -->
     <link rel="stylesheet" href="style.css"/>
 </head>
 <body onload="onInit()" onkeypress="onKeyPress(event)">
 <main>
     <div id="content">
         <canvas width="600" height="800" id="canvas"></canvas>
-        <img src="body.png" id="body"/>
-        <img src="head.png" id="head"/>
+        <img src="gfx/giraffes/00_body.png" id="body"/>
+        <img src="gfx/giraffes/00_head.png" id="head"/>
     </div>
     <div id="border"></div>
-    <span id="length">0</span>
+    <nav id="nav_top">
+        <a id="back_btn">Przerwij</a>
+        <span id="length">0 / 0</span>
+    </nav>
+    <nav id="nav_bottom">Poziom: <span id="level_name"></span></nav>
+
     <script src="main.js"></script>
 </main>
 </body>

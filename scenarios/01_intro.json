@@ -1,0 +1,21 @@
+{
+    "name": "Hello World",
+    "preview": null,
+    "background": "savanna.jpg",
+    "levels": [
+        {
+            "name": "Sawanna Welcome To",
+            "items": [
+                {"x":5,"y":3,"kind":"apple"}
+            ],
+            "start": {
+                "x": 5, "y": 7, "dir": "w"
+            },
+            "hitbox": {
+                "2_8": "+", "3_8": "+", "4_8": "+", "5_8": "+",
+                "2_10": "+", "3_10": "+", "4_10": "+", "5_10": "+"
+            },
+            "limit": 17
+        }
+    ]
+}
