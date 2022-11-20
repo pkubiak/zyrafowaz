@@ -77,7 +77,7 @@ body.tęcza canvas {
     width: 100%;
     padding: 20px;
     box-sizing: border-box;;
-    z-index: 105;
+    z-index: 505;
     display: flex;
     justify-content: space-between;
 }
@@ -98,8 +98,10 @@ main {
     left: 50%; top: 50%;
     transform: translate(-50%, -50%);
     background: url(gfx/backgrounds/savanna.jpg);
+    background-position: 0%;
     background-size: cover;
     background-repeat: repeat-x;
+    transition: background-position 1s;
     /* animation: tlo 10s infinite; */
 }
 

@@ -5,6 +5,7 @@
     "levels": [
         {
             "name": "1.1 Początek",
+            "message": "x",
             "difficulty": 1,
             "items": [
                 {"x":5,"y":3,"kind":"apple_0"},

@@ -127,19 +127,21 @@ class GamePlay {
     updateScores() {
         let el = document.querySelector('#length');
         el.innerText = (this.player.length()) + " / " + (this.level.limit);
-        el.style.color = (this.player.length() > this.level.limit) ? 'red' : 'auto';
+        el.style.color = (this.player.length() > this.level.limit) ? 'red' : 'white';
     }
 
     setLevelName(name) {
         document.querySelector("#level_name").innerText = name;
     }
 
-    constructor(data) {
+    constructor(data, progress) {
         HEAD.style.transition = '';
         HEAD.src = "gfx/giraffes/00_head.png";
         HEAD.style.left = (SIZE*data.start.x+DX)+'px';
         HEAD.style.top = (SIZE*data.start.y)+'px';
         HEAD.style.transform = 'translate(-50%, -100%)';
+
+        document.querySelector("main").style.backgroundPosition = (100*progress) + "%";
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx2.clearRect(0, 0, CANVAS.width, CANVAS.height);
@@ -149,10 +151,11 @@ class GamePlay {
         this.not_checked = true;
         this.setLevelName(this.level.name);
         this.player = new Player(data.start.x, data.start.y, DIRS_KEYS.indexOf(data.start.dir));
-        this.min_iter = 0.5; // game speed 
+        this.min_iter = 0.3; // game speed 
         this.updateScores();
         this.onKeyPress_fn = this.onKeyPress.bind(this);
-        window.addEventListener("keypress", this.onKeyPress_fn)
+        window.addEventListener("keypress", this.onKeyPress_fn);
+        
     }
 
 
@@ -190,8 +193,7 @@ class GamePlay {
             this.level.mark(nx, ny, this.player.lastDir, this.player.dir);
     
             this.player.move();
-            // if(this.player.length() > this.level.limit)
-            //     return {transition_to: "gameover"};
+
             this.last = timestamp;
             this.not_checked = true;
     
@@ -266,7 +268,7 @@ class Game {
 
             const data = SCENARIOS[this.scenario].levels[this.level_id];
 
-            this.gameplay = new GamePlay(data);
+            this.gameplay = new GamePlay(data, this.level_id / (SCENARIOS[this.scenario].levels.length - 1));
 
             if(data.message) {
                 showModal(
@@ -307,8 +309,10 @@ class Game {
 
             window.setTimeout(() => {
                 showModal("😭 Porażka 😭", `${message}, spróbuj ponowanie`, 3000, () => {
-                    this.gameplay.destruct();
-                    this.state = 'startPlaying';
+                    window.setTimeout(() => {
+                        this.gameplay.destruct();
+                        this.state = 'startPlaying';
+                    }, 1500);
                 });
             }, 2000);
             this.message = null;
@@ -414,7 +418,10 @@ async function onInit() {
     window.requestAnimationFrame(GAME.loop_fn);
 }
 
+let MODAL_FN = undefined, MODAL_CALLBACK = undefined;
+
 function showModal(title, content, timeout, callback) {
+    if(MODAL_CALLBACK)
     console.log("---->")
     document.querySelector('#border').style.zIndex = 300;
     document.querySelector('#modal h3').innerText = title;
@@ -422,7 +429,11 @@ function showModal(title, content, timeout, callback) {
 
     document.querySelector('#modal-backdrop').classList.remove('hidden');
 
+    let handler = undefined;
     let callback_fn = () => {
+        if(handler) {
+            window.clearTimeout(handler);
+        }
         console.log('callback')
         document.querySelector('body').removeEventListener("click", callback_fn);
         hideModal();
@@ -431,7 +442,9 @@ function showModal(title, content, timeout, callback) {
     
     document.querySelector('body').addEventListener("click", callback_fn);
 
-    if(timeout)window.setTimeout(callback_fn, timeout);
+    if(timeout) {
+        handler = window.setTimeout(callback_fn, timeout);
+    }
 }
 
 function hideModal() {
