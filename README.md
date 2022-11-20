@@ -1,12 +1,27 @@
 # 🦒ŻyrafoWąż
+W grze wcielamy się w żyrafę z bardzo długą szyją, która stara się zdobyć wszystkie smakołyki rosnąć na drzewie (jabłka, liście). 
+Musi przytym uważać aby się nie zaplątać.
 
+Gra jest grą typowo logiczną zręcznościową, w której musimy tak pokierować 
 
-## Authors:
+## Technologia:
+Gra została wykonana w technologi webowej z użyciem JavaScriptu. Powinna działać w większości przeglądarek webowych.
+
+## Sterowanie:
+- Menu: Myszka
+- W trakcie gry: klawisze WSAD
+
+### Team: RPM
 - Paweł Kubiak
 - Marek Ciążyński
 - Rafał Paprocki
 
 ## Screenshots
+
+<img src="gfx/screenshots/1.png">
+<img src="gfx/screenshots/2.png"><br/>
+<img src="gfx/screenshots/3.png">
+<img src="gfx/screenshots/4.png">
 
 ## Gameplay
 
