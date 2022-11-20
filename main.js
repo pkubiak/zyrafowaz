@@ -260,21 +260,50 @@ class GamePlay {
 }
 class Game {
     constructor() {
-        this.state = 'startPlaying';
+        this.state = 'listLevels';
         this.loop_fn = this.loop.bind(this);
         this.scenario = '01_intro';
-        this.level_id = 3;
+        this.level_id = 0;
+
+        document.querySelector('#back_btn').addEventListener('click', () => {
+            this.state = 'listLevels';
+        });
     }
 
     loop(timestamp) {
-        // console.log(">>", timestamp, this);
         if(this.state == 'waiting'){}
+        if(this.state == 'listLevels') {
+            hideModal();
+            if(this.handler) {
+                window.clearTimeout(this.handler);
+                this.handler = undefined;
+            }
+
+            buildLevelsList();
+            this.state = 'waiting';
+            document.querySelector('#nav_bottom').classList.add('hidden');
+            document.querySelector('#nav_top').classList.add('hidden');
+            document.querySelector('#levels_list').classList.remove('hidden');
+            document.querySelector('#content').classList.add('hidden');
+            document.querySelector("#border").classList.add("movetotop");
+            document.querySelector('main').style.background = 'url("gfx/title.jpg")';
+            document.querySelector('main').style.backgroundPosition = 'center center';
+
+            if(this.gameplay) {
+                this.gameplay.destruct();
+                this.gameplay = undefined;
+            }
+        }
         else if(this.state == 'initialized') {
-            
-            //
+
         } else
         if(this.state == 'startPlaying') {
             this.state = 'waiting';
+            document.querySelector('#levels_list').classList.add('hidden');
+            document.querySelector('#content').classList.remove('hidden');
+            document.querySelector("#border").classList.remove("movetotop");
+            document.querySelector('#nav_bottom').classList.remove('hidden');
+            document.querySelector('#nav_top').classList.remove('hidden');
 
             console.info("initLevel", this.scenario, this.level_id);
             console.log(SCENARIOS);
@@ -294,18 +323,14 @@ class Game {
                     data.name,
                     data.message,
                     3000,
-                    () => {window.setTimeout(() => {this.state = 'playing';}, 2000);}
+                    () => {this.handler = window.setTimeout(() => {this.state = 'playing';}, 2000);}
                 )
-            } else 
-            // showModal(
-            //     "Wiadomość", 
-            //     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", 
-            //     5000, 
-            //     () => {
-            //         window.setTimeout(() => {this.state = 'playing'}, 2000);
-            //     }
-            // );
-            window.setTimeout(() => {this.state = 'playing';}, 2000);
+            } else {
+                this.handler = window.setTimeout(() => {
+                    this.state = 'playing';
+                    this.handler=undefined;
+                }, 2000);
+            }
         } else 
         if(this.state == 'playing') {
             let res = this.gameplay.loop(timestamp);
@@ -344,15 +369,22 @@ class Game {
             // this.gameplay.destruct();
         } else
         if(this.state == 'success') {
+            let lastScore = parseInt(this.message.split(":")[1]);
+            let name = SCENARIOS[this.scenario].levels[this.level_id].name;
+            let bestScore = localStorage.getItem(name);
+            if(!bestScore || parseInt(bestScore) > lastScore)
+                localStorage.setItem(name, lastScore);
+            
             if(this.level_id + 1 == SCENARIOS[this.scenario].levels.length) {
-                showModal("🦒🦒 Brawo 🦒🦒", "Ukończyłeś wszystkie poziomy", 100000, () => {this.level_id = 0; this.state = 'startPlaying'});
+                showModal("🦒🦒 Brawo 🦒🦒", "Ukończyłeś wszystkie poziomy", 100000, () => {this.level_id = 0; this.state = 'listLevels'});
             } else {
                 showModal(
                     "🦒 Gratulacje 🦒",
                     "Kolejny poziom już na ciebie czeka.<br>" + this.message,
                     3000,
                     () => {
-                        this.level_id += 1; this.state = 'startPlaying';
+                        this.level_id += 1; 
+                        this.state = 'startPlaying';
                     }
                 );
             }
@@ -432,8 +464,36 @@ class Level {
     }
 }
 
+function buildLevelsList() {
+    let el = document.querySelector("#levels_list");
+    el.innerHTML = '';
+    for(let k in SCENARIOS) {
+        let scenerio = SCENARIOS[k];
+        let h2 = document.createElement('h2')
+        h2.innerText = scenerio.name;
+        el.appendChild(h2);
+
+        for(let id in scenerio.levels) {
+            let level = scenerio.levels[id];
+
+            let div = document.createElement('div'), stars = '';
+            for(let i=0;i<level.difficulty;i++)stars += '⭐';
+            const best = localStorage.getItem(level.name) || '-';
+            div.innerHTML = `<b>🥇 ${best} / ${level.limit}</b><h3>${level.name}</h3><span>Trudność: ${stars}</span>`;
+            div.addEventListener('click', function(){
+                GAME.scenerio = k;
+                GAME.level_id = parseInt(id);
+                GAME.state = 'startPlaying';
+            });
+            el.appendChild(div);
+        }
+    }
+}
+
 async function onInit() {
     await loadScenario("01_intro");
+    buildLevelsList();
+
     GAME = new Game();
     window.requestAnimationFrame(GAME.loop_fn);
 }
@@ -469,7 +529,6 @@ function showModal(title, content, timeout, callback) {
 
 function hideModal() {
     document.querySelector('#modal-backdrop').classList.add('hidden');
-    
     window.setTimeout(() => {document.querySelector('#border').style.zIndex = 100;}, 1000);
 }
 

@@ -21,15 +21,13 @@ https://www.freepik.com/free-vector/hand-drawn-realistic-tropical-plants-animals
 - [X] Paralaxa tła
 - [x] Ogarnąć kolejność zdobywania
 - [x] Dodać listki
-- [ ] Dodać resizowanie do ekranu
+- [x] Dodać resizowanie do ekranu
+- [x] Poprawić komunikat o wyniku
+- [x] Dodać listę plansz
+- [x] Dodać listę wyników
+
 - [ ] Dodać sterowanie mobile
-
 - [ ] Dodać przeszkody
-
-- [ ] Poprawić komunikat o wyniku
-- [ ] Dodać listę plansz
-- [ ] Dodać listę wyników
-
 
 - [ ] Dodać jakieś plansze
 

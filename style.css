@@ -2,7 +2,8 @@ html{width: 100%; height: 100%}
 body {
     background: url(gfx/background.jpg);
     background-size: cover;
-    font-family: 'Lemon', cursive;
+    /* font-family: 'Lemon', cursive; */
+    font-family: 'Grandstander', cursive;
     margin:0;
     width:100%;height:100%;
     overflow: hidden;
@@ -156,4 +157,62 @@ main {
 
 #modal h3 {
     font-size: 36px;
+}
+
+#levels_list {
+    flex: 1 1;
+    padding: 40px;
+    box-sizing: border-box;;
+    background: rgba(255,255,255,0.6);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#levels_list > div {
+    border: 2px dashed  black;
+    padding: 10px;
+    margin-bottom: 8px;
+    background: #eda014bb;
+    cursor: pointer;;
+}
+
+#levels_list h3 {
+    margin: 0;
+    font-size: 26px;
+}
+
+#levels_list b {
+    float: right;
+    font-size: 26px;
+    white-space: nowrap;
+}
+
+.hidden {
+    opacity: 0.0;
+    /* display: none; */
+}
+
+#levels_list.hidden {
+    display: none;
+}
+
+#front {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    z-index: 500;
+
+}
+
+#front > h1 { 
+    height: 300px;
+    text-align: center;
+    opacity: 0;
+}
+
+#border.movetotop{
+    z-index: 550 !important;
+    pointer-events: none;;
 }
