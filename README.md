@@ -18,13 +18,13 @@ Gra została wykonana w technologi webowej z użyciem JavaScriptu. Powinna dzia�
 
 ## Screenshots
 
-<img src="gfx/screenshots/1.png">
-<img src="gfx/screenshots/2.png"><br/>
-<img src="gfx/screenshots/3.png">
-<img src="gfx/screenshots/4.png">
+<img src="gfx/screenshots/1.png" width="300">
+<img src="gfx/screenshots/2.png" width="300"><br/>
+<img src="gfx/screenshots/3.png"  width="300">
+<img src="gfx/screenshots/4.png" width="300">
 
 ## Gameplay
-
+Youtube: https://youtu.be/P4Jm67HnNEc
 
 ## Used Assets
 Downloaded from FreePik using personal license:
