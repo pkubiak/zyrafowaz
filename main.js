@@ -472,3 +472,15 @@ function hideModal() {
     
     window.setTimeout(() => {document.querySelector('#border').style.zIndex = 100;}, 1000);
 }
+
+function resize(){
+    console.log(event, window.innerWidth, window.innerHeight, ">", );
+
+    let scaleX = document.body.parentNode.clientWidth / (710+100), scaleY = document.body.parentNode.clientHeight / (930+100);
+    // console.log(window.innerWidth, window.innerHeight, "/", scaleX, scaleY);
+    let scale = Math.min(scaleX, scaleY, 1);
+    document.querySelector("main").style.transform = "translate(-50%, -50%) scale("+scale+")";
+};
+
+window.addEventListener('resize', resize);
+window.addEventListener("DOMContentLoaded", resize);
