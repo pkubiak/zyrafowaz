@@ -124,3 +124,33 @@ main {
 #back_btn {
     cursor: pointer;
 }
+
+#modal-backdrop{
+    background: rgba(255,255,255,0.4);
+    position: absolute;;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 200;
+    backdrop-filter: blur(5px);
+    transition: opacity 1s;
+}
+#modal-backdrop.hidden {
+    opacity: 0.0;
+}
+
+#modal {
+    background: white;
+    position: absolute;
+    width: 60%;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px 50px;
+    font-size: 26px;
+    text-align: center;;
+    z-index: 200;
+}
+
+#modal h3 {
+    font-size: 36px;
+}

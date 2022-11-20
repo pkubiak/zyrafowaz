@@ -125,7 +125,9 @@ class Player {
 
 class GamePlay {
     updateScores() {
-        document.querySelector('#length').innerText = (this.player.length()) + " / " + (this.level.limit);
+        let el = document.querySelector('#length');
+        el.innerText = (this.player.length()) + " / " + (this.level.limit);
+        el.style.color = (this.player.length() > this.level.limit) ? 'red' : 'auto';
     }
 
     setLevelName(name) {
@@ -133,18 +135,22 @@ class GamePlay {
     }
 
     constructor(data) {
-        // if(this.level !== undefined)
-        //     this.level.destruct();
         HEAD.style.transition = '';
         HEAD.src = "gfx/giraffes/00_head.png";
+        HEAD.style.left = (SIZE*data.start.x+DX)+'px';
+        HEAD.style.top = (SIZE*data.start.y)+'px';
+        HEAD.style.transform = 'translate(-50%, -100%)';
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx2.clearRect(0, 0, CANVAS.width, CANVAS.height);
         this.angle = 0;
         console.log("--", data);
         this.level = new Level(data);
         this.not_checked = true;
         this.setLevelName(this.level.name);
         this.player = new Player(data.start.x, data.start.y, DIRS_KEYS.indexOf(data.start.dir));
-        this.min_iter = 1; // game speed 
-
+        this.min_iter = 0.5; // game speed 
+        this.updateScores();
         this.onKeyPress_fn = this.onKeyPress.bind(this);
         window.addEventListener("keypress", this.onKeyPress_fn)
     }
@@ -162,15 +168,15 @@ class GamePlay {
             let [nx, ny] = this.player.nextSegment();
     
             if(nx < 1 || nx > 9 || ny < 1 || ny > 12) {
-                return {transition_to: "gameover"};
+                return {transition_to: "gameover", message: "Wypadłeś poza planszę"};
             }
     
             if(this.level.visit(nx, ny, this.player.lastDir) === false) {
-                return {transition_to: "gameover"};
+                return {transition_to: "gameover", message: "Zaplątała ci się szyja 😂"};
             }
     
             if(this.level.isCompleted()){
-                return {transition_to: "success"};
+                return {transition_to: "success", message: "Twój wynik to: 17"};
             }
         }
     
@@ -184,8 +190,8 @@ class GamePlay {
             this.level.mark(nx, ny, this.player.lastDir, this.player.dir);
     
             this.player.move();
-            if(this.player.length() > this.level.limit)
-                return {transition_to: "gameover"};
+            // if(this.player.length() > this.level.limit)
+            //     return {transition_to: "gameover"};
             this.last = timestamp;
             this.not_checked = true;
     
@@ -237,49 +243,98 @@ class Game {
     constructor() {
         this.state = 'startPlaying';
         this.loop_fn = this.loop.bind(this);
+        this.scenario = '01_intro';
+        this.level_id = 0;
     }
 
     loop(timestamp) {
         // console.log(">>", timestamp, this);
-        if(this.state == 'initialized') {
+        if(this.state == 'waiting'){}
+        else if(this.state == 'initialized') {
+            
             //
         } else
         if(this.state == 'startPlaying') {
             //todo: show top-nav
             // todo: show bottom-nav
             // show game
-            this.state = 'playing';
-
-            let scenario = "01_intro", id = 2;
-            console.info("initLevel", scenario, id);
+            this.state = 'waiting';
+            // let id = Math.floor(SCENARIOS[this.scenario].levels.length * Math.random());
+            console.info("initLevel", this.scenario, this.level_id);
             console.log(SCENARIOS);
             document.querySelector("body").classList.remove("tęcza");
 
-            const data = SCENARIOS[scenario].levels[id];
+            const data = SCENARIOS[this.scenario].levels[this.level_id];
 
             this.gameplay = new GamePlay(data);
+
+            if(data.message) {
+                showModal(
+                    data.name,
+                    data.message,
+                    3000,
+                    () => {window.setTimeout(() => {this.state = 'playing';}, 2000);}
+                )
+            } else 
+            // showModal(
+            //     "Wiadomość", 
+            //     "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.", 
+            //     5000, 
+            //     () => {
+            //         window.setTimeout(() => {this.state = 'playing'}, 2000);
+            //     }
+            // );
+            window.setTimeout(() => {this.state = 'playing';}, 2000);
         } else 
         if(this.state == 'playing') {
             let res = this.gameplay.loop(timestamp);
             if(res) {
                 this.state = res.transition_to;
-                this.gameplay.destruct();
+                this.message = res.message;
+                // this.gameplay.destruct();
             }
         } else 
         if(this.state == 'gameover') {
             console.log("STATE: gameover");
             HEAD.src = "gfx/giraffes/00_head_xx.png";
+            this.state = 'waiting';
             // HEAD.style.zIndex = 107;
             // document.querySelector('#content').style.overflow = 'visible';
             // this.state = 'startPlaying';
-            window.setTimeout(() => {this.state = "startPlaying"}, 5000);
-            this.state = 'initialized';
-            window.setTimeout(() => {alert("Uszkodziłeś żyrafę! Spróbuj ponownie")}, 2000);
+
+            //TODO: wyświetlić modal
+            let message = this.message || "Niestety przegrałeś";
+
+            window.setTimeout(() => {
+                showModal("😭 Porażka 😭", `${message}, spróbuj ponowanie`, 3000, () => {
+                    this.gameplay.destruct();
+                    this.state = 'startPlaying';
+                });
+            }, 2000);
+            this.message = null;
+            // window.setTimeout(() => {alert("Uszkodziłeś żyrafę! Spróbuj ponownie")}, 2000);
+        } else
+        if(this.state == 'gameover2') {
+            console.log("STATE: gameover2");
+            // document.querySelector('#content').classList.add('hide-content')
+            this.state = 'waiting';
+            // this.gameplay.destruct();
         } else
         if(this.state == 'success') {
+            if(this.level_id + 1 == SCENARIOS[this.scenario].levels.length) {
+                showModal("🦒🦒 Brawo 🦒🦒", "Ukończyłeś wszystkie poziomy", 100000, () => {this.level_id = 0; this.state = 'startPlaying'});
+            } else {
+                showModal(
+                    "🦒 Gratulacje 🦒",
+                    "Kolejny poziom już na ciebie czeka.<br>" + this.message,
+                    3000,
+                    () => {
+                        this.level_id += 1; this.state = 'startPlaying';
+                    }
+                );
+            }
             console.log("STATE: success");
-            alert("Grtulacje");
-            this.state = 'initialized';
+            this.state = 'waiting';
         }
         window.requestAnimationFrame(this.loop_fn);
     }
@@ -359,3 +414,28 @@ async function onInit() {
     window.requestAnimationFrame(GAME.loop_fn);
 }
 
+function showModal(title, content, timeout, callback) {
+    console.log("---->")
+    document.querySelector('#border').style.zIndex = 300;
+    document.querySelector('#modal h3').innerText = title;
+    document.querySelector('#modal p').innerHTML = content;
+
+    document.querySelector('#modal-backdrop').classList.remove('hidden');
+
+    let callback_fn = () => {
+        console.log('callback')
+        document.querySelector('body').removeEventListener("click", callback_fn);
+        hideModal();
+        if(callback)callback();
+    }
+    
+    document.querySelector('body').addEventListener("click", callback_fn);
+
+    if(timeout)window.setTimeout(callback_fn, timeout);
+}
+
+function hideModal() {
+    document.querySelector('#modal-backdrop').classList.add('hidden');
+    
+    window.setTimeout(() => {document.querySelector('#border').style.zIndex = 100;}, 1000);
+}

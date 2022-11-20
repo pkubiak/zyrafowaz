@@ -5,6 +5,7 @@
     "levels": [
         {
             "name": "1.1 Początek",
+            "difficulty": 1,
             "items": [
                 {"x":5,"y":3,"kind":"apple_0"},
                 {"x":2,"y":5,"kind":"apple_0"}
@@ -20,6 +21,7 @@
         },
         {
             "name": "1.2 Supełek",
+            "difficulty": 1,
             "message": "Zbieraj owoce od najwiekszego do najmniejszego",
             "items": [
                 {"x":5,"y":3,"kind":"apple_0"},
@@ -38,6 +40,8 @@
         },
         {
             "name": "1.3 Uczta",
+            "difficulty": 2,
+            "message": "Uważaj, żeby się nie poplątać",
             "items": [
                 {"x":2,"y":3,"kind":"apple_1"},
                 {"x":3,"y":2,"kind":"apple_0"},
