@@ -7,7 +7,11 @@ pattern.src = 'gfx/giraffes/00_pattern.png';
 
 const SIZE = 64, DX = -20;
 const DIRS = [[0,-1], [1,0], [0,1], [-1,0]];
-const DIRS_KEYS = ['w', 'd', 's', 'a'];
+
+const DIRS_KEYS = {
+    "w":0,"d":1,"s":2,"a":3,
+    "ArrowUp":0,"ArrowRight":1,"ArrowDown":2,"ArrowLeft":3
+};
 
 const CANVAS = document.createElement('canvas');
 const ctx2 = CANVAS.getContext("2d");
@@ -156,12 +160,12 @@ class GamePlay {
         this.level = new Level(data);
         this.not_checked = true;
         this.setLevelName(this.level.name);
-        this.player = new Player(data.start.x, data.start.y, DIRS_KEYS.indexOf(data.start.dir));
+        this.player = new Player(data.start.x, data.start.y, DIRS_KEYS[data.start.dir]);
         this.min_iter = 0.3; // game speed 
         this.updateScores();
         this.onKeyPress_fn = this.onKeyPress.bind(this);
         this.collectedItems = {};
-        window.addEventListener("keypress", this.onKeyPress_fn);
+        window.addEventListener("keydown", this.onKeyPress_fn);
         
     }
 
@@ -253,8 +257,8 @@ class GamePlay {
 
     onKeyPress(event) {
         console.log(">>", this.player);
-        let k = DIRS_KEYS.indexOf(event.key);
-        if(k != -1 && (k+2)%4 != this.player.lastDir ){
+        let k = DIRS_KEYS[event.key];
+        if(k !== undefined && (k+2)%4 != this.player.lastDir ){
            this.player.dir = k;
         }
         console.log(event, k);
