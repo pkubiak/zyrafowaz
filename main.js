@@ -177,7 +177,8 @@ class GamePlay {
         this.mc.get('pan').set({ direction: Hammer.DIRECTION_ALL, threshold: 20 });
 
         this.mc.on("panleft panright panup pandown", (ev) => {
-            this.player.orient(DIRS_KEYS[ev.type]);
+            if(this.started !== undefined)
+                this.player.orient(DIRS_KEYS[ev.type]);
         });
     }
 
@@ -268,7 +269,8 @@ class GamePlay {
     }
 
     onKeyPress(event) {
-        this.player.orient(DIRS_KEYS[event.key]);
+        if(this.started !== undefined)
+            this.player.orient(DIRS_KEYS[event.key]);
     }
 }
 class Game {
