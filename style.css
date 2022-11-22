@@ -1,6 +1,6 @@
 html{width: 100%; height: 100%}
 body {
-    background: url(gfx/background.jpg);
+    background: url(gfx/background.jpg) center center no-repeat;
     background-size: cover;
     /* font-family: 'Lemon', cursive; */
     font-family: 'Grandstander', cursive;
@@ -92,25 +92,18 @@ body.tęcza canvas {
 }
 
 main {
-    /* background-clip: content-box; */
-    /* box-sizing: content-box; */  
-    /* transform: translate(-50%, -50%) scale(0.8); */
-    /* border: 20px solid red; */
     position: absolute ;
     left: 50%; top: 50%;
+    width: 600px;
+    height: 800px;
     transform: translate(-50%, -50%);
-    background: url(gfx/backgrounds/savanna.jpg);
+    /* background: url(gfx/backgrounds/savanna.jpg); */
     background-position: 0%;
     background-size: cover;
     background-repeat: repeat-x;
     transition: background-position 1s;
-    /* animation: tlo 10s infinite; */
 }
 
-@keyframes tlo {
-    from{background-position: 0%;}
-    to{background-position: 100%;}
-}
 
 #border {
     width: 710px;
@@ -120,7 +113,6 @@ main {
     position: absolute;
     left: -50px;
     top: -65px;
-    /* opacity: 0.5; */
     box-sizing: border-box;;
     z-index:100;
 }
@@ -159,21 +151,49 @@ main {
     font-size: 36px;
 }
 
-#levels_list {
+#front > div {
     flex: 1 1;
-    padding: 40px;
+    padding: 0px 40px;
+    padding-top: 50px;
+    padding-right: 20px;
+    /* padding-bottom: 100px; */
+    /* display: flex; */
+    /* flex-direction: column; */
     box-sizing: border-box;;
     background: rgba(255,255,255,0.6);
-    overflow-x: hidden;
-    overflow-y: auto;
+    /* overflow: hidden; */
+    
 }
 
-#levels_list > div {
+#levels_list {
+    padding-top: 10px;
+    padding-right: 20px;
+    /* background:red; */
+    box-sizing:border-box; 
+    height:400px;
+    padding-bottom: 60px;
+    -webkit-mask-image: linear-gradient(
+        transparent 0%,
+        rgba(0, 0, 0, 1) 10%, 
+        rgba(0, 0, 0, 1) 95%, 
+        transparent 100%
+    )
+}
+
+/* #levels_list > div {
+    height: 300px;
+    overflow: auto;
+    padding-bottom: 40px;
+} */
+#levels_list div.list-item {
     border: 2px dashed  black;
     padding: 10px;
     margin-bottom: 8px;
     background: #eda014bb;
     cursor: pointer;;
+}
+div.spacer {
+    height: 10px;
 }
 
 #levels_list h3 {
@@ -188,8 +208,8 @@ main {
 }
 
 .hidden {
-    opacity: 0.0;
-    /* display: none; */
+    /* opacity: 0.0; */
+    display: none !important;
 }
 
 #levels_list.hidden {

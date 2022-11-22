@@ -9,22 +9,27 @@ Gra została wykonana w technologi webowej z użyciem JavaScriptu. Powinna dzia�
 
 ## Sterowanie:
 - Menu: Myszka
-- W trakcie gry: klawisze WSAD
+- W trakcie gry: 
+    - klawisze: WSAD / 🔼🔽◀▶
+    - swipes
 
 ### Team: RPM
-- Paweł Kubiak
-- Marek Ciążyński
-- Rafał Paprocki
+- [Paweł Kubiak](https://github.com/pkubiak/)
+- [Marek Ciążyński](https://github.com/marek-ciazynski)
+- [Rafał Paprocki](https://github.com/RafalPaprocki)
 
 ## Screenshots
 
 <img src="gfx/screenshots/1.png" width="300">
 <img src="gfx/screenshots/2.png" width="300"><br/>
-<img src="gfx/screenshots/3.png"  width="300">
+<img src="gfx/screenshots/3.png" width="300">
 <img src="gfx/screenshots/4.png" width="300">
 
 ## Gameplay
+
 Youtube: https://youtu.be/P4Jm67HnNEc
+
+![Youtube](https://i3.ytimg.com/vi/P4Jm67HnNEc/hqdefault.jpg)
 
 ## Used Assets
 Downloaded from FreePik using personal license:
@@ -36,4 +41,5 @@ Downloaded from FreePik using personal license:
 - [menu / levels background](https://www.freepik.com/free-vector/african-savannah-landscape-wild-nature-africa_21267432.htm)
 - [apple](https://www.freepik.com/premium-vector/red-apple-shiny-fresh-fruit-delicious-snack_22142637.htm)
 
-# 
+## Logo
+Created using [inkpx.com](https://inkpx.com/templates/zdv/retro-comic-halftone)

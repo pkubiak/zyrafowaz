@@ -285,7 +285,7 @@ class Game {
             this.state = 'waiting';
             document.querySelector('#nav_bottom').classList.add('hidden');
             document.querySelector('#nav_top').classList.add('hidden');
-            document.querySelector('#levels_list').classList.remove('hidden');
+            document.querySelector('#front').classList.remove('hidden');
             document.querySelector('#content').classList.add('hidden');
             document.querySelector("#border").classList.add("movetotop");
             document.querySelector('main').style.background = 'url("gfx/title.jpg")';
@@ -301,7 +301,7 @@ class Game {
         } else
         if(this.state == 'startPlaying') {
             this.state = 'waiting';
-            document.querySelector('#levels_list').classList.add('hidden');
+            document.querySelector('#front').classList.add('hidden');
             document.querySelector('#content').classList.remove('hidden');
             document.querySelector("#border").classList.remove("movetotop");
             document.querySelector('#nav_bottom').classList.remove('hidden');
@@ -468,6 +468,8 @@ class Level {
 
 function buildLevelsList() {
     let el = document.querySelector("#levels_list");
+    let scrollbars = OverlayScrollbars(el);
+    if(scrollbars)scrollbars.destroy();
     el.innerHTML = '';
     for(let k in SCENARIOS) {
         let scenerio = SCENARIOS[k];
@@ -479,6 +481,7 @@ function buildLevelsList() {
             let level = scenerio.levels[id];
 
             let div = document.createElement('div'), stars = '';
+            div.className = 'list-item';
             for(let i=0;i<level.difficulty;i++)stars += '⭐';
             const best = localStorage.getItem(level.name) || '-';
             div.innerHTML = `<b>🥇 ${best} / ${level.limit}</b><h3>${level.name}</h3><span>Trudność: ${stars}</span>`;
@@ -490,12 +493,15 @@ function buildLevelsList() {
             el.appendChild(div);
         }
     }
+    let div = document.createElement('div');
+    div.className = 'spacer';
+    el.appendChild(div);
+    
+    OverlayScrollbars(el, {clipAlways: false});
 }
 
 async function onInit() {
     await loadScenario("01_intro");
-    buildLevelsList();
-
     GAME = new Game();
     window.requestAnimationFrame(GAME.loop_fn);
 }
@@ -535,9 +541,9 @@ function hideModal() {
 }
 
 function resize(){
-    console.log(event, window.innerWidth, window.innerHeight, ">", );
+    const margin = 60;
 
-    let scaleX = document.body.parentNode.clientWidth / (710+100), scaleY = document.body.parentNode.clientHeight / (930+100);
+    let scaleX = document.body.parentNode.clientWidth / (710 + margin), scaleY = document.body.parentNode.clientHeight / (930 + margin);
     // console.log(window.innerWidth, window.innerHeight, "/", scaleX, scaleY);
     let scale = Math.min(scaleX, scaleY, 1);
     document.querySelector("main").style.transform = "translate(-50%, -50%) scale("+scale+")";
