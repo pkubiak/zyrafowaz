@@ -47,6 +47,8 @@ function drawGiraffe(ctx, player, perc, drawPattern) {
     ctx.save();
     ctx.beginPath();
     ctx.lineWidth = 45;
+    // ctx.lineCap = 'round';
+    ctx.lineJoin = "round";
     ctx.strokeStyle = '#fff';
     if(!drawPattern){
         ctx.shadowColor = "#000";
