@@ -9,7 +9,6 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.3/css/OverlayScrollbars.min.css" integrity="sha512-Xd88BFhCPQY5aAt2W3F5FmTVKkubVsAZDJBo7aXPRc5mwIPTEJvNeqbvBWfNKd4IEu3v9ots+nTdsTzVynlaOw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.3/js/OverlayScrollbars.min.js" integrity="sha512-Ae2SccSxoNp/Cn7PIlowLk8cmVyyW5aSCbrB/k08h/yYeK3zrNJ/oAJf8RK/ZD95G8KjkzPIXxKbeYPn43KC0w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    
     <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <title>ŻyrafoWąż</title>
@@ -26,11 +25,11 @@
         <img src="gfx/giraffes/00_head.png" id="head"/>
     </div>
     <div id="border"></div>
-    <nav id="nav_top">
+    <nav id="nav_top" class="hidden">
         <a id="back_btn">Przerwij</a>
         <span id="length">0 / 0</span>
     </nav>
-    <nav id="nav_bottom">Poziom: <span id="level_name"></span></nav>
+    <nav id="nav_bottom" class="hidden">Poziom: <span id="level_name"></span></nav>
 
     <div id="modal-backdrop" class="hidden">
         <div id="modal">
@@ -44,6 +43,7 @@
     </div>
 </main>
 
+<script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
 <script src="main.js"></script>
 
 </body>

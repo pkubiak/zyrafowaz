@@ -10,7 +10,8 @@ const DIRS = [[0,-1], [1,0], [0,1], [-1,0]];
 
 const DIRS_KEYS = {
     "w":0,"d":1,"s":2,"a":3,
-    "ArrowUp":0,"ArrowRight":1,"ArrowDown":2,"ArrowLeft":3
+    "ArrowUp":0,"ArrowRight":1,"ArrowDown":2,"ArrowLeft":3,
+    "panup":0,"panright":1,"pandown":2,"panleft":3
 };
 
 const CANVAS = document.createElement('canvas');
@@ -101,7 +102,7 @@ function drawGiraffe(ctx, player, perc, drawPattern) {
 
 
 function loadScenario(name) {
-    return fetch(`scenarios/${name}.json`)
+    return fetch(`scenarios/${name}.json`, {cache: "no-store"})
         .then((response) => response.json())
         .then((data) => {
             SCENARIOS[name] = data;
@@ -132,6 +133,12 @@ class Player {
     length() {
         return this.segments.length;
     }
+
+    orient(dir) {
+        if(dir !== undefined && (dir+2)%4 != this.lastDir ){
+           this.dir = dir;
+        }
+    }
 }
 
 class GamePlay {
@@ -156,7 +163,6 @@ class GamePlay {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx2.clearRect(0, 0, CANVAS.width, CANVAS.height);
         this.angle = 0;
-        console.log("--", data);
         this.level = new Level(data);
         this.not_checked = true;
         this.setLevelName(this.level.name);
@@ -167,6 +173,12 @@ class GamePlay {
         this.collectedItems = {};
         window.addEventListener("keydown", this.onKeyPress_fn);
         
+        this.mc = new Hammer(document.querySelector("body"));
+        this.mc.get('pan').set({ direction: Hammer.DIRECTION_ALL, threshold: 20 });
+
+        this.mc.on("panleft panright panup pandown", (ev) => {
+            this.player.orient(DIRS_KEYS[ev.type]);
+        });
     }
 
 
@@ -250,18 +262,13 @@ class GamePlay {
     }
 
     destruct() {
-        console.log("Destruct");
-        window.removeEventListener("keypress", this.onKeyPress_fn);
+        window.removeEventListener("keydown", this.onKeyPress_fn);
         this.level.destruct();
+        this.mc.destroy();
     }
 
     onKeyPress(event) {
-        console.log(">>", this.player);
-        let k = DIRS_KEYS[event.key];
-        if(k !== undefined && (k+2)%4 != this.player.lastDir ){
-           this.player.dir = k;
-        }
-        console.log(event, k);
+        this.player.orient(DIRS_KEYS[event.key]);
     }
 }
 class Game {
@@ -304,6 +311,10 @@ class Game {
 
         } else
         if(this.state == 'startPlaying') {
+            if(this.gameplay) {
+                this.gameplay.destruct();
+                this.gameplay = undefined;
+            }
             this.state = 'waiting';
             document.querySelector('#front').classList.add('hidden');
             document.querySelector('#content').classList.remove('hidden');
@@ -311,8 +322,6 @@ class Game {
             document.querySelector('#nav_bottom').classList.remove('hidden');
             document.querySelector('#nav_top').classList.remove('hidden');
 
-            console.info("initLevel", this.scenario, this.level_id);
-            console.log(SCENARIOS);
             document.querySelector("body").classList.remove("tęcza");
 
             const data = SCENARIOS[this.scenario].levels[this.level_id];
@@ -347,7 +356,6 @@ class Game {
             }
         } else 
         if(this.state == 'gameover') {
-            console.log("STATE: gameover");
             HEAD.src = "gfx/giraffes/00_head_xx.png";
             this.state = 'waiting';
             // HEAD.style.zIndex = 107;
@@ -369,7 +377,6 @@ class Game {
             // window.setTimeout(() => {alert("Uszkodziłeś żyrafę! Spróbuj ponownie")}, 2000);
         } else
         if(this.state == 'gameover2') {
-            console.log("STATE: gameover2");
             // document.querySelector('#content').classList.add('hide-content')
             this.state = 'waiting';
             // this.gameplay.destruct();
@@ -389,12 +396,12 @@ class Game {
                     "Kolejny poziom już na ciebie czeka.<br>" + this.message,
                     3000,
                     () => {
+                        this.gameplay.destruct();
                         this.level_id += 1; 
                         this.state = 'startPlaying';
                     }
                 );
             }
-            console.log("STATE: success");
             this.state = 'waiting';
         }
         window.requestAnimationFrame(this.loop_fn);
@@ -436,7 +443,6 @@ class Level {
         let dir_c = (dir == 0 || dir == 2) ? "|" : "-";
 
         let h = this.hitbox[key];
-        console.log(h, dir_c, dir);
         if(h !== undefined) {
             if(h == '+' || h == dir_c)
                 return false;
@@ -514,7 +520,6 @@ let MODAL_FN = undefined, MODAL_CALLBACK = undefined;
 
 function showModal(title, content, timeout, callback) {
     if(MODAL_CALLBACK)
-    console.log("---->")
     document.querySelector('#border').style.zIndex = 300;
     document.querySelector('#modal h3').innerText = title;
     document.querySelector('#modal p').innerHTML = content;
@@ -526,7 +531,6 @@ function showModal(title, content, timeout, callback) {
         if(handler) {
             window.clearTimeout(handler);
         }
-        console.log('callback')
         document.querySelector('body').removeEventListener("click", callback_fn);
         hideModal();
         if(callback)callback();
@@ -548,7 +552,6 @@ function resize(){
     const margin = 60;
 
     let scaleX = document.body.parentNode.clientWidth / (710 + margin), scaleY = document.body.parentNode.clientHeight / (930 + margin);
-    // console.log(window.innerWidth, window.innerHeight, "/", scaleX, scaleY);
     let scale = Math.min(scaleX, scaleY, 1);
     document.querySelector("main").style.transform = "translate(-50%, -50%) scale("+scale+")";
 };

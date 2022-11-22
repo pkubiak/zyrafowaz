@@ -5,7 +5,7 @@
     "levels": [
         {
             "name": "1.1 Początek",
-            "message": "Zbierz Wszystkie Jabłka, aby zaliczyć poziom.",
+            "message": "Zbierz Wszystkie Jabłuszka, aby zaliczyć poziom.<br>Używaj strzałek lub swipe'uj, by kierować żyrafą.",
             "difficulty": 1,
             "items": [
                 {"x":5,"y":3,"kind":"apple_0"},
