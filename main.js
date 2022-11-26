@@ -301,7 +301,7 @@ class Game {
             document.querySelector('#front').classList.remove('hidden');
             document.querySelector('#content').classList.add('hidden');
             document.querySelector("#border").classList.add("movetotop");
-            document.querySelector('main').style.background = 'url("gfx/title.jpg")';
+            document.querySelector('main').style.backgroundImage = 'url("gfx/title.jpg")';
             document.querySelector('main').style.backgroundPosition = 'center center';
 
             if(this.gameplay) {
