@@ -1,0 +1,59 @@
+{
+    "name": "Ciężkie poziomy",
+    "preview": null,
+    "background": "savanna5.jpg",
+    "levels": [
+        {
+            "name": "2.1 Będzie Ciężko",
+            "difficulty": 2,
+            "items": [{"x": 3,"y":11,"kind":"apple_1"},{"x":4,"y":7,"kind":"apple_0"},  {"x": 8, "y": 5, "kind": "leaf"}, {"x": 8, "y": 2, "kind": "apple_3"}, {"x": 1, "y": 11, "kind": "apple_2"}, {"x": 5, "y": 3, "kind": "apple_0"}, {"x": 3, "y": 3, "kind": "apple_3"}, {"x": 5, "y": 1, "kind": "apple_3"}, {"x": 6, "y": 12, "kind": "apple_0"}, {"x": 3, "y": 6, "kind": "leaf"}, {"x": 7, "y": 7, "kind": "apple_3"}, {"x": 7, "y": 1, "kind": "apple_4"}, {"x": 4, "y": 12, "kind": "apple_0"}, {"x": 2, "y": 5, "kind": "apple_0"}, {"x": 8, "y": 11, "kind": "apple_4"}, {"x": 7, "y": 4, "kind": "apple_3"}, {"x": 9, "y": 12, "kind": "apple_3"}, {"x": 6, "y": 2, "kind": "leaf"}, {"x": 1, "y": 9, "kind": "apple_3"}],
+            "start": {
+                "x": 5, "y": 7, "dir": "w"
+            },
+            "hitbox": {
+                "2_8": "+", "3_8": "+", "4_8": "+", "5_8": "+",
+                "2_10": "+", "3_10": "+", "4_10": "+", "5_10": "+"
+            },
+            "limit": 78
+        },
+        {
+            "name": "2.2 Będzie Ciężej",
+            "difficulty": 3,
+            "items": [
+                {"x": 1, "y": 6, "kind": "apple_3"},
+                {"x": 2, "y": 4, "kind": "leaf"},
+                {"x": 4, "y": 5, "kind": "leaf"}, 
+                {"x": 1, "y": 12, "kind": "apple_2"}, 
+                {"x": 6, "y": 10, "kind": "apple_0"}, 
+                {"x": 4, "y": 3, "kind": "apple_4"}, 
+                {"x": 2, "y": 2, "kind": "apple_4"}, 
+                {"x": 4, "y": 11, "kind": "apple_2"},
+                {"x": 1, "y": 7, "kind": "leaf"}, 
+                {"x": 5, "y": 2, "kind": "leaf"}, 
+                {"x": 7, "y": 2, "kind": "leaf"}, 
+                {"x": 9, "y": 12, "kind": "apple_2"},
+                {"x": 7, "y": 5, "kind": "apple_0"}, 
+                {"x": 1, "y": 3, "kind": "apple_0"}, 
+                {"x": 1, "y": 11, "kind": "apple_1"},
+                {"x": 9, "y": 9, "kind": "apple_2"},
+                {"x": 9, "y": 4, "kind": "apple_2"},
+                {"x": 3, "y": 5, "kind": "apple_2"},
+                {"x": 8, "y": 4, "kind": "apple_1"},
+                {"x": 8, "y": 3, "kind": "apple_0"},
+                {"x": 9, "y": 8, "kind": "apple_2"},
+                {"x": 7, "y": 1, "kind": "apple_0"},
+                {"x": 7, "y": 9, "kind": "apple_0"},
+                {"x": 6, "y": 8, "kind": "apple_2"},
+                {"x": 8, "y": 11, "kind": "apple_1"}
+            ],
+            "start": {
+                "x": 5, "y": 7, "dir": "w"
+            },
+            "hitbox": {
+                "2_8": "+", "3_8": "+", "4_8": "+", "5_8": "+",
+                "2_10": "+", "3_10": "+", "4_10": "+", "5_10": "+"
+            },
+            "limit": 98
+        }
+    ]
+}

@@ -167,7 +167,7 @@ class GamePlay {
         this.not_checked = true;
         this.setLevelName(this.level.name);
         this.player = new Player(data.start.x, data.start.y, DIRS_KEYS[data.start.dir]);
-        this.min_iter = 0.3; // game speed 
+        this.min_iter = 0.4; // game speed 
         this.updateScores();
         this.onKeyPress_fn = this.onKeyPress.bind(this);
         this.collectedItems = {};
@@ -330,7 +330,7 @@ class Game {
 
             let progress = this.level_id / (SCENARIOS[this.scenario].levels.length - 1);
 
-            document.querySelector("main").style.background = "url(gfx/backgrounds/" + SCENARIOS[this.scenario].background + ")";
+            document.querySelector("main").style.backgroundImage = "url(gfx/backgrounds/" + SCENARIOS[this.scenario].background + ")";
             document.querySelector("main").style.backgroundPosition = (100*progress) + "%";
 
             this.gameplay = new GamePlay(data);
@@ -498,7 +498,7 @@ function buildLevelsList() {
             const best = localStorage.getItem(level.name) || '-';
             div.innerHTML = `<b>🥇 ${best} / ${level.limit}</b><h3>${level.name}</h3><span>Trudność: ${stars}</span>`;
             div.addEventListener('click', function(){
-                GAME.scenerio = k;
+                GAME.scenario = k;
                 GAME.level_id = parseInt(id);
                 GAME.state = 'startPlaying';
             });
@@ -514,6 +514,7 @@ function buildLevelsList() {
 
 async function onInit() {
     await loadScenario("01_intro");
+    await loadScenario("02_random");
     GAME = new Game();
     window.requestAnimationFrame(GAME.loop_fn);
 }
